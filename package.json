@@ -1,0 +1,23 @@
+{
+  "type": "module",
+  "name": "langgraph",
+  "version": "1.0.0",
+  "description": "1. 单一数据源    - 数据通过 state 在节点之间传递",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@langchain/core": "^1.1.39",
+    "@langchain/langgraph": "^1.2.8",
+    "@langchain/openai": "^1.4.4",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
