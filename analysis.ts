@@ -28,7 +28,7 @@ const model = new ChatOpenAI({
     temperature: 0,
     configuration: {
         baseURL: "https://api.kr777.top/v1",
-        apiKey: "sk-1aGn6WbXfzfvYSWCGBuPjewsSk1zzIcJ53y2wFSKYG6RDO0U",
+        apiKey: process.env.QWEN_API_KEY,
     },
 });
 

@@ -51,7 +51,7 @@ model = init_chat_model(
     "Qwen3-235B-A22B",
     model_provider="openai",
     base_url="https://api.kr777.top/v1",
-    api_key="sk-1aGn6WbXfzfvYSWCGBuPjewsSk1zzIcJ53y2wFSKYG6RDO0U",
+    api_key=process.env.QWEN_API_KEY,
     temperature=0.0,
 )
 

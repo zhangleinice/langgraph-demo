@@ -38,7 +38,7 @@ const AssistantAnnotation = Annotation.Root({
 // 2. 初始化模型
 const model = new ChatOpenAI({
     modelName: "Qwen3-235B-A22B",
-    apiKey: "sk-1aGn6WbXfzfvYSWCGBuPjewsSk1zzIcJ53y2wFSKYG6RDO0U",
+    apiKey: process.env.QWEN_API_KEY,
     configuration: {
         baseURL: "https://api.kr777.top/v1",
     },
