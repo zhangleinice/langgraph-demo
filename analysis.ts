@@ -32,8 +32,7 @@ const model = new ChatOpenAI({
     },
 });
 
-// --- 4. 节点逻辑 ---
-
+// ai判断风险等级
 const analyzeContent = async (state: AgentModerationState): Promise<Partial<AgentModerationState>> => {
     const systemPrompt = `你是一个内容审核助手。分析给定的内容，判断是否包含不当语言、垃圾信息或敏感话题。
 请必须只返回 JSON，格式如下：
@@ -63,6 +62,7 @@ const analyzeContent = async (state: AgentModerationState): Promise<Partial<Agen
     return { analysis };
 };
 
+// 程序自动决策
 const makeAgentDecision = async (state: AgentModerationState): Promise<Partial<AgentModerationState>> => {
     const { analysis } = state;
     if (!analysis) return { decision: "needs_review" as const };
@@ -96,7 +96,7 @@ const humanReviewPlaceholder = async (): Promise<Partial<AgentModerationState>> 
     };
 };
 
-// --- 5. 路由函数 ---
+// 人工审核
 const shouldAutoDecide = (state: AgentModerationState): "decide" | "review" => {
     const { analysis } = state;
     if (analysis?.has_issues && analysis.severity === "high") {

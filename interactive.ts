@@ -39,8 +39,12 @@ const level1ReviewNode = async (state: typeof ContentReviewAnnotation.State) => 
     console.log("\n--- 📋 命中人工审核规则：流程已在此处【暂停】 ---");
 
     // 抛出暂停信号，第二次运行时 decision 会被赋值
+    // 实际生产中，展示给前端，人工审核后，后端执行后续逻辑
     const decision = interrupt({
+        // 数据透传
+        // 通过这个参数，审核后台可以直接从 app.getState() 中读到这条内容，展示在屏幕上，而不需要再去数据库里翻一遍。
         sample_content: state.content,
+        // 它告诉审核界面：“这里你只有两个选择，要么点‘通过’，要么点‘拒绝’。”
         options: ["approve", "reject"]
     }) as string;
 
