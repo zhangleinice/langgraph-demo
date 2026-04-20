@@ -61,3 +61,35 @@ graph TD
     
     NodeB --> END((结束))
 ```
+
+---
+
+## 4. 单文件多智能体主线 (`src/tianwork.ts`)
+
+**核心知识点：** 用一个文件串起 Supervisor、多代理、状态、路由和持久化，适合作为学习入口。
+
+* **状态定义 (`AppAnnotation`)**: 除了 `messages` 外，还维护 `next` 和 `agentResult`，分别表示下一跳节点和子代理产出。
+* **Supervisor 路由 (`supervisorNode`)**: 根据用户最新输入，把任务分发到 `generatePageAgent`、`analysisAgent`、`talkAgent` 或 `userInput`。
+* **三个工作代理**: 分别负责页面生成、分析问答和普通对话；每个代理执行完后都会把结果写回 `agentResult`。
+* **图装配 (`StateGraph`)**: `START -> supervisor -> 子代理 -> supervisor -> FINISH`，展示 LangGraph 中最基础的 supervisor 编排模式。
+* **持久化 (`MemorySaver`)**: 用 `thread_id` 让同一条对话链在多次 `invoke` 之间保留上下文。
+
+```mermaid
+graph TD
+    START((开始)) --> Supervisor[supervisor: 路由决策]
+    Supervisor -->|generatePageAgent| Page[页面生成代理]
+    Supervisor -->|analysisAgent| Analysis[数据分析代理]
+    Supervisor -->|talkAgent| Talk[对话代理]
+    Supervisor -->|userInput| UserInput[追问节点]
+    Supervisor -->|FINISH| END((结束))
+    Page --> Supervisor
+    Analysis --> Supervisor
+    Talk --> Supervisor
+    UserInput --> END
+```
+
+运行方式：
+```bash
+npx tsx src/tianwork.ts
+```
+

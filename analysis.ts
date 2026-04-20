@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { z } from "zod";
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
