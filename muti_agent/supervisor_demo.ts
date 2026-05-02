@@ -19,12 +19,20 @@ const SupervisorAnnotation = Annotation.Root({
 type SupervisorState = typeof SupervisorAnnotation.State;
 
 // --- 3. 模型配置 ---
+// const model = new ChatOpenAI({
+//     modelName: "Qwen3-235B-A22B",
+//     temperature: 0,
+//     configuration: {
+//         baseURL: "https://api.kr777.top/v1",
+//         apiKey: process.env.QWEN_API_KEY,
+//     },
+// });
 const model = new ChatOpenAI({
-    modelName: "Qwen3-235B-A22B",
+    modelName: "deepseek-v4-flash", 
     temperature: 0,
     configuration: {
-        baseURL: "https://api.kr777.top/v1",
-        apiKey: process.env.QWEN_API_KEY,
+        baseURL: "https://api.kr777.top/v1", 
+        apiKey: process.env.DEEPSEEK_API_KEY, 
     },
 });
 

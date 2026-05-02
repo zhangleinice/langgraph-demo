@@ -135,3 +135,56 @@ async function runDemo() {
 }
 
 runDemo();
+
+
+
+/**
+ * 生产环境线上流程
+ * 1. stream接口对话中，服务端interrupt暂停对话，抛出信号
+ * 2. 前端通过stream接口，捕获到中断信号后，展示人工审核界面
+ * 3. 人工审核完成后，前端通过一个新接口，将决策结果发送给后端
+ * 4. 后端接收到决策结果后，继续执行后续逻辑
+ */
+
+// 前端监听对话接口状态
+// async function startChat(userInput) {
+//     const response = await fetch('/api/chat', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ content: userInput, thread_id: "test_001" })
+//     });
+
+//     // 获取流式读取器
+//     const reader = response.body.getReader();
+//     const decoder = new TextDecoder();
+//     let isFinished = false;
+
+//     while (!isFinished) {
+//         const { value, done } = await reader.read();
+//         if (done) break;
+
+//         const chunk = decoder.decode(value, { stream: true });
+        
+//         // 处理每一个 chunk（通常 SSE 会以 data: 开头）
+//         try {
+//             // 这里假设后端发回的是 JSON 字符串
+//             const data = JSON.parse(chunk.replace('data: ', ''));
+
+//             if (data.type === 'text') {
+//                 // 1. 实时更新对话文字
+//                 updateUI(data.content); 
+//             } else if (data.type === 'suspend') {
+//                 // 2. 捕获中断状态（人工审核）
+//                 showReviewModal(data.options, data.thread_id);
+//                 isFinished = true; // 业务逻辑上的“中断”，停止监听
+//             } else if (data.type === 'end') {
+//                 // 3. 正常结束
+//                 showSuccessIcon();
+//                 isFinished = true;
+//             }
+//         } catch (e) {
+//             // 处理非 JSON 的纯文本片段
+//             updateUI(chunk);
+//         }
+//     }
+// }
