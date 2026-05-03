@@ -64,32 +64,63 @@ graph TD
 
 ---
 
-## 4. 单文件多智能体主线 (`src/tianwork.ts`)
+# 🤖 TianWork: 智能研发全栈 Agent 系统
 
-**核心知识点：** 用一个文件串起 Supervisor、多代理、状态、路由和持久化，适合作为学习入口。
+**TianWork** 是一个基于 **LangGraph** 和 **DeepSeek-V4** 构建的自动化研发指挥系统。它通过“中枢调度”与“专业 Agent”协作，实现了从用户模糊需求到高质量 React 代码生成的全流程自动化。
 
-* **状态定义 (`AppAnnotation`)**: 除了 `messages` 外，还维护 `next` 和 `agentResult`，分别表示下一跳节点和子代理产出。
-* **Supervisor 路由 (`supervisorNode`)**: 根据用户最新输入，把任务分发到 `generatePageAgent`、`analysisAgent`、`talkAgent` 或 `userInput`。
-* **三个工作代理**: 分别负责页面生成、分析问答和普通对话；每个代理执行完后都会把结果写回 `agentResult`。
-* **图装配 (`StateGraph`)**: `START -> supervisor -> 子代理 -> supervisor -> FINISH`，展示 LangGraph 中最基础的 supervisor 编排模式。
-* **持久化 (`MemorySaver`)**: 用 `thread_id` 让同一条对话链在多次 `invoke` 之间保留上下文。
+---
 
-```mermaid
-graph TD
-    START((开始)) --> Supervisor[supervisor: 路由决策]
-    Supervisor -->|generatePageAgent| Page[页面生成代理]
-    Supervisor -->|analysisAgent| Analysis[数据分析代理]
-    Supervisor -->|talkAgent| Talk[对话代理]
-    Supervisor -->|userInput| UserInput[追问节点]
-    Supervisor -->|FINISH| END((结束))
-    Page --> Supervisor
-    Analysis --> Supervisor
-    Talk --> Supervisor
-    UserInput --> END
-```
+## 🌟 核心架构：三层进化
 
-运行方式：
-```bash
-npx tsx src/tianwork.ts
-```
+### 1. 指挥层 (Supervisor)
+*   **智能路由**：利用 **JSON Schema** 约束，精准识别用户意图。
+*   **任务分发**：根据需求将任务派发给 `generatePageAgent`（研发）、`analysisAgent`（分析）或 `talkAgent`（对话）。
+*   **状态管理**：维护全局上下文，确保跨 Agent 协作时的信息不丢失。
+
+### 2. 执行层 (Professional Agents)
+*   **ReAct 循环**：采用 `bindTools` + `ToolNode` 的原生模式，AI 自主决定工具调用顺序。
+*   **深度思考 (Sequential Thinking)**：借鉴 OpenAI o1 思路，强制 AI 在行动前先规划、在行动后先反思。
+*   **自我修正**：支持 `isRevision` 逻辑，当技术方案不通时，Agent 会自动回溯并修正。
+
+### 3. 工具层 (Dynamic AI Tools)
+*   **去模板化**：工具内部不再依赖写死的 `if/else`，而是通过内部轻量级 AI 模型实时产出。
+*   **PRD 动态生成**：自动将模糊描述转化为标准的业务规格说明书。
+*   **代码自动化**：基于设计方案，动态生成符合现代规范（React + Tailwind + AntD）的前端代码。
+
+---
+
+## 🛠 技术栈
+
+*   **核心框架**: LangGraph (StateGraph)
+*   **大模型**: DeepSeek-V4-Flash (via OpenAI Protocol)
+*   **开发语言**: TypeScript / tsx
+*   **Schema 校验**: Zod
+
+---
+
+## 📂 项目结构
+
+*   `tianwork.ts`: 整个工作流的“大脑”，包含节点定义、路由逻辑和状态机配置。
+*   `tools.ts`: 工具箱，每个工具都是一个“微型专家”，通过 AI 动态处理具体的研发逻辑。
+
+---
+
+## 🚀 核心工作流演示
+
+以输入 **“帮我写一个中医挂号页面”** 为例：
+
+1.  **Supervisor**：识别意图并路由至 `generatePageAgent`。
+2.  **Thinking**：调用 `sequentialThinking` 思考挂号流程（科室、医生、时间、病症）。
+3.  **Analysis**：调用 `requirementAnalysis` 生成中医业务 PRD。
+4.  **Design**：调用 `technicalDesign` 设计页面组件树与挂号表单逻辑。
+5.  **CodeGen**：调用 `generateCode` 产出带 Tailwind 样式的 React 代码。
+6.  **Review**：调用 `codeReview` 自我检查代码 Bug（如异步处理、表单校验）。
+7.  **Output**：任务完成，直接交付可运行的生产力代码。
+
+---
+
+> **Note**: 本项目通过 `sequentialThinking` 工具实现了类似思维链的推理过程，显著提升了复杂逻辑下的代码准确率。
+
+
+
 
